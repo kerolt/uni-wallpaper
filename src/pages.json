@@ -1,0 +1,73 @@
+{
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+		}
+	},
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页推荐"
+			}
+		},
+		{
+			"path": "pages/classify/index",
+			"style": {
+				"navigationBarTitleText": "分类"
+			}
+		},
+		{
+			"path": "pages/user/index",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/classlist/index",
+			"style": {
+				"navigationBarTitleText": "分类列表",
+				"navigationStyle": "default"
+			}
+		},
+		{
+			"path": "pages/preview/index",
+			"style": {
+				"navigationBarTitleText": "图片预览"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"navigationStyle": "custom"
+	},
+	"tabBar": {
+		"list": [
+			{
+				"text": "推荐",
+				"pagePath": "pages/index/index",
+				"iconPath": "static/image/home.png",
+				"selectedIconPath": "static/image/home-h.png"
+			},
+			{
+				"text": "分类",
+				"pagePath": "pages/classify/index",
+				"iconPath": "static/image/category.png",
+				"selectedIconPath": "static/image/category-h.png"
+			},
+			{
+				"text": "我的",
+				"pagePath": "pages/user/index",
+				"iconPath": "static/image/me.png",
+				"selectedIconPath": "static/image/me-h.png"
+			}
+		],
+		"color": "#736f6f",
+		"selectedColor": "#42b983",
+		"borderStyle": "white"
+	}
+}
