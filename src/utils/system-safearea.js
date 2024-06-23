@@ -12,3 +12,8 @@ export function getTitleBarHeight() {
     return 40;
   }
 }
+
+export function getSysSafeAreaInsets() {
+  const { bottom } = uni.getSystemInfoSync().safeAreaInsets;
+  return bottom; 
+}

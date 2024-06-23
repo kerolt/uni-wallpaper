@@ -1,22 +1,72 @@
 <script setup>
+import { onLoad, onReachBottom } from "@dcloudio/uni-app";
+import { ref } from "vue";
+import { apiGetClassifyDetails } from "../../api/api";
+import { getSysSafeAreaInsets } from "../../utils/system-safearea";
+
+const params = {
+  pageNum: 1
+};
+const classifyDetails = ref([]);
+const noData = ref(false);
+
+onLoad((e) => {
+  const { id, name } = e;
+  params.classid = id;
+  params.name = name;
+  uni.setNavigationBarTitle({
+    title: name
+  });
+  getClassifyDetails();
+  console.log(uni.getSystemInfoSync().safeAreaInsets);
+});
+
+onReachBottom(() => {
+  getClassifyDetails();
+});
+
 function gotoPreview() {
   uni.navigateTo({
     url: "/pages/preview/index"
   });
 }
+
+async function getClassifyDetails() {
+  if (noData.value) {
+    return;
+  }
+  const { data } = await apiGetClassifyDetails(params);
+  classifyDetails.value = [...classifyDetails.value, ...data];
+  if (data.length === 0) {
+    noData.value = true;
+  }
+  params.pageNum++;
+}
 </script>
 
 <template>
   <view class="grid-content">
-    <view v-for="item in 9" class="grid-item" @click="gotoPreview">
+    <view v-for="item in classifyDetails" :key="item._id" class="grid-item" @click="gotoPreview">
       <!-- <navigator url="/pages/preview/index"> -->
-      <image src="@/common/image/preview_small.webp" mode="aspectToFill" />
+      <image :src="item.smallPicurl" mode="aspectToFill" />
       <!-- </navigator> -->
     </view>
   </view>
+
+  <uni-load-more :status="noData ? 'noMore' : 'loading'" />
+
+  <view :style="{ paddingBottom: getSysSafeAreaInsets() + 'px' }" />
 </template>
 
 <style lang="scss" scoped>
+.safe {
+  padding-bottom: constant(safe-area-inset-bottom);
+  /* 兼容 iOS < 11.2 */
+  padding-bottom: env(safe-area-inset-bottom);
+  /* 兼容 iOS >= 11.2 */
+
+}
+
 .grid-content {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
