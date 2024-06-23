@@ -1,24 +1,35 @@
 <script setup>
+import { getTimeDescription } from "../utils/utils";
 defineProps({
   isMore: {
     type: Boolean,
     default: false,
+  },
+  item: {
+    type: Object,
+    default() {
+      return {
+        name: "壁纸分类",
+        pircurl: "../common/image/preview2.jpg",
+        updateTime: Date.now()
+      };
+    }
   }
 });
 </script>
 
 <template>
-  <navigator v-if="!isMore" url="" class="image-box">
-    <image class="pic" src="@/common/image/preview2.jpg" mode="aspectFill" />
+  <navigator v-if="!isMore" :url="`/pages/classlist/index?id=${item._id}&name=${item.name}`" class="image-box">
+    <image class="pic" :src="item.picurl" mode="aspectFill" />
     <view class="title">
-      明星美女
+      {{ item.name }}
     </view>
     <view class="update-time">
-      三天前更新
+      {{ getTimeDescription(item.updateTime) }}前更新
     </view>
   </navigator>
 
-  <navigator v-else url="" class="image-box more">
+  <navigator v-else url="/pages/classify/index" class="image-box more" open-type="switchTab">
     <image class="pic" src="@/common/image/more.jpg" mode="aspectFill" />
     <view class="more-content">
       <uni-icons type="more-filled" size="34" color="#fff" />

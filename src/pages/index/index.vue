@@ -1,13 +1,14 @@
 <script setup>
+import { ref } from "vue";
+import { onLoad } from "@dcloudio/uni-app";
 import InfoBar from "../../components/InfoBar.vue";
 import Topic from "../../components/Topic.vue";
 import NavBar from "../../components/NavBar.vue";
-import { apiGetBanner, apiGetDayRandom, apiGetNotice } from "../../api/api";
-import { ref } from "vue";
-import { onLoad } from "@dcloudio/uni-app";
+import { apiGetBanner, apiGetClassify, apiGetDayRandom, apiGetNotice } from "../../api/api";
 
 const bannerList = ref([]);
 const recommendList = ref([]);
+const classifyList = ref([]);
 
 async function getBannerList() {
   const { data } = await apiGetBanner();
@@ -17,12 +18,19 @@ async function getBannerList() {
 async function getRecommendList() {
   const { data } = await apiGetDayRandom();
   recommendList.value = data;
-  console.log(data);
+}
+
+async function getClassifyList() {
+  const { data } = await apiGetClassify({
+    select: true
+  });
+  classifyList.value = data;
 }
 
 onLoad(async () => {
   getBannerList();
   getRecommendList();
+  getClassifyList();
 });
 
 </script>
@@ -94,12 +102,8 @@ onLoad(async () => {
         </template>
       </InfoBar>
       <view class="select-content">
-        <navigator v-for="item in 8" url="/pages/classlist/index">
-          <Topic class="select-content-item" />
-        </navigator>
-        <navigator url="/pages/classify/index" open-type="switchTab">
-          <Topic :is-more="true" />
-        </navigator>
+        <Topic v-for="item in classifyList" :key="item._id" class="select-content-item" :item="item" />
+        <Topic :is-more="true" />
       </view>
     </view>
   </view>
