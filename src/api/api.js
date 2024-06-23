@@ -19,3 +19,17 @@ export function apiGetNotice(data = {}) {
     method: "POST"
   });
 }
+
+export function apiGetClassify(data = {}) {
+  return request({
+    url: "/classify",
+    data
+  });
+}
+
+export function apiGetClassifyDetails(data = {}) {
+  return request({
+    url: "/wallList",
+    data
+  });
+}

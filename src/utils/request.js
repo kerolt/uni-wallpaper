@@ -4,6 +4,9 @@ export function request(config = {}) {
   let { url, data = {}, method = "GET", header = {} } = config;
   url = BASE_URL + url;
   return new Promise((resolve, reject) => {
+    uni.showLoading({
+      mask: true
+    });
     uni.request({
       url,
       data,
@@ -22,6 +25,9 @@ export function request(config = {}) {
       },
       fail: err => {
         reject(err);
+      },
+      complete: () => {
+        uni.hideLoading();
       }
     });
   });
