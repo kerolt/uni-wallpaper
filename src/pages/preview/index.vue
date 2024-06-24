@@ -5,6 +5,7 @@ import { getStatusBarHeight, getTitleBarHeight } from "../../utils/system-safear
 
 const imageList = ref([]);
 const currentIndex = ref(0);
+const currentInfo = ref(null);
 const hasReadImages = new Set();
 
 
@@ -24,6 +25,8 @@ onLoad((e) => {
   hasReadImages.add((currentIndex.value - 1 + imageList.value.length) % imageList.value.length);
   hasReadImages.add(currentIndex.value);
   hasReadImages.add((currentIndex.value + 1) % imageList.value.length);
+
+  currentInfo.value = imageList.value[currentIndex.value];
 });
 
 function goBack() {
@@ -44,6 +47,8 @@ function swipperChange(e) {
   hasReadImages.add((currentIndex.value - 1 + imageList.value.length) % imageList.value.length);
   hasReadImages.add(currentIndex.value);
   hasReadImages.add((currentIndex.value + 1) % imageList.value.length);
+  currentInfo.value = imageList.value[currentIndex.value];
+  console.log(currentInfo.value);
 }
 
 // 信息弹窗
@@ -127,10 +132,10 @@ function closeRatePopup() {
               壁纸ID：
             </view>
             <view class="caption">
-              1212122
+              {{ currentInfo._id }}
             </view>
           </view>
-          <view class="pop-row">
+          <!-- <view class="pop-row">
             <view class="title">
               分类：
             </view>
@@ -139,13 +144,13 @@ function closeRatePopup() {
                 猫咪
               </view>
             </view>
-          </view>
+          </view> -->
           <view class="pop-row">
             <view class="title">
               发布者：
             </view>
             <view class="caption">
-              kerolt
+              {{ currentInfo.nickname }}
             </view>
           </view>
           <view class="pop-row">
@@ -153,8 +158,8 @@ function closeRatePopup() {
               评分：
             </view>
             <view class="caption rate">
-              <uni-rate readonly touchable="false" :value="5" />
-              <text>5分</text>
+              <uni-rate readonly touchable="false" :value="currentInfo.score" />
+              <text>{{ currentInfo.score }}分</text>
             </view>
           </view>
           <view class="pop-row">
@@ -162,7 +167,7 @@ function closeRatePopup() {
               摘要：
             </view>
             <view class="caption">
-              摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要
+              {{ currentInfo.description }}
             </view>
           </view>
           <view class="pop-row">
@@ -170,8 +175,10 @@ function closeRatePopup() {
               标签：
             </view>
             <view class="caption">
-              <view class="tag">
-                标签1
+              <view class="tags">
+                <view v-for="tab in currentInfo.tabs" :key="tab" class="tag">
+                  {{ tab }}
+                </view>
               </view>
             </view>
           </view>
@@ -310,7 +317,7 @@ function closeRatePopup() {
     font-size: 28rpx;
 
     .pop-content {
-      padding: 10rpx 0;
+      padding: 10rpx 20rpx;
 
       .pop-row {
         display: flex;
@@ -321,6 +328,7 @@ function closeRatePopup() {
           width: 150rpx;
           text-align: right;
           color: $text-color-light-gray;
+          margin-right: 10rpx;
         }
 
         .caption {
@@ -341,12 +349,17 @@ function closeRatePopup() {
           color: $theme-color;
         }
 
-        .tag {
-          border: 1px solid $theme-color;
-          border-radius: 25rpx;
-          color: $theme-color;
-          width: fit-content;
-          padding: 0 10rpx;
+        .tags {
+          display: flex;
+
+          .tag {
+            border: 1px solid $theme-color;
+            border-radius: 25rpx;
+            color: $theme-color;
+            width: fit-content;
+            padding: 0 10rpx;
+            margin-right: 15rpx;
+          }
         }
       }
 
