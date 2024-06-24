@@ -2,12 +2,17 @@
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { getStatusBarHeight, getTitleBarHeight } from "../../utils/system-safearea";
+import { apiSetupScore } from "../../api/api";
 
-const imageList = ref([]);
-const currentIndex = ref(0);
-const currentInfo = ref(null);
-const hasReadImages = new Set();
-
+const imageList = ref([]);        // 先从缓存中获取图片对象数组
+const currentIndex = ref(0);      // 当前图片的索引
+const currentInfo = ref(null);    // 当前图片对象
+const hasReadImages = new Set();  // 已经从网络获取了的图片
+const isRate = ref(false);        // 是否已经评分
+const showDetails = ref(true);    // 显示遮罩
+const infoPopup = ref(null);      // 信息弹窗
+const ratePopup = ref(null);      // 评分弹窗
+const rateNum = ref(0);           // 评分数字
 
 onLoad((e) => {
   const classlist = uni.getStorageSync("classlist") || [];
@@ -35,9 +40,6 @@ function goBack() {
   });
 }
 
-// 显示/隐藏遮罩
-const showDetails = ref(true);
-
 function showChange() {
   showDetails.value = !showDetails.value;
 }
@@ -48,26 +50,44 @@ function swipperChange(e) {
   hasReadImages.add(currentIndex.value);
   hasReadImages.add((currentIndex.value + 1) % imageList.value.length);
   currentInfo.value = imageList.value[currentIndex.value];
-  console.log(currentInfo.value);
 }
-
-// 信息弹窗
-const infoPopup = ref(null);
 
 function openInfoPop() {
   infoPopup.value.open();
 }
 
-// 评分弹窗
-const ratePopup = ref(null);
-const rateNum = ref(0);
-
 function openRatePop() {
+  // 判断当前图片是否已经评分过了
+  if (currentInfo.value.userScore) {
+    isRate.value = true;
+    rateNum.value = currentInfo.value.userScore;
+  }
   ratePopup.value.open();
 }
 
 function closeRatePopup() {
+  rateNum.value = 0;
+  isRate.value = false;
   ratePopup.value.close();
+}
+
+async function submitRateScore() {
+  const { classid, _id: wallId } = currentInfo.value;
+  const res = await apiSetupScore({
+    classid,
+    wallId,
+    userScore: rateNum.value
+  });
+  if (res.errCode === 0) {
+    uni.showToast({
+      title: "评分成功",
+      icon: "none"
+    });
+    // 这里不能是更新currentInfo的值，而是需要更新数组的值，之后将数组更新至缓存中
+    imageList.value[currentIndex.value].userScore = rateNum.value;
+    uni.setStorageSync("classlist", imageList.value);
+    closeRatePopup();
+  }
 }
 </script>
 
@@ -103,7 +123,7 @@ function closeRatePopup() {
           <view class="star" @click="openRatePop">
             <uni-icons type="star" size="40" />
             <view class="text">
-              5分
+              评分
             </view>
           </view>
           <view class="download">
@@ -195,16 +215,16 @@ function closeRatePopup() {
         <view class="pop-header">
           <view />
           <view class="pop-header-text">
-            评分
+            {{ isRate ? "已经评过分啦" : "评分" }}
           </view>
           <uni-icons type="closeempty" class="close" @click="closeRatePopup" />
         </view>
         <view class="rate-pop-content">
-          <uni-rate v-model="rateNum" allow-half />
+          <uni-rate v-model="rateNum" allow-half :disabled="isRate" disabled-color="rgb(255, 202, 62)" />
           <text>{{ rateNum }}分</text>
         </view>
         <view class="rate-pop-footer">
-          <button type="default" size="mini" plain :disabled="!rateNum">
+          <button type="default" size="mini" plain :disabled="!rateNum || isRate" @click="submitRateScore">
             就这个分了！
           </button>
         </view>

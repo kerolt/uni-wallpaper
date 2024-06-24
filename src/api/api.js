@@ -33,3 +33,10 @@ export function apiGetClassifyDetails(data = {}) {
     data
   });
 }
+
+export function apiSetupScore(data = {}) {
+  return request({
+    url: "/setupScore",
+    data
+  });
+}

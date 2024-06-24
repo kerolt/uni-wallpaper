@@ -16,9 +16,11 @@ export function request(config = {}) {
         if (res.data.errCode === 0) {
           resolve(res.data);
         } else {
-          uni.showToast({
-            title: res.data.message,
-            icon: "none"
+          uni.showModal({
+            title: "啊哦！",
+            content: res.data.errMsg,
+            icon: "none",
+            showCancel: false
           });
           reject(res.data);
         }
