@@ -18,7 +18,6 @@ onLoad((e) => {
     title: name
   });
   getClassifyDetails();
-  console.log(uni.getSystemInfoSync().safeAreaInsets);
 });
 
 onReachBottom(() => {
@@ -37,6 +36,7 @@ async function getClassifyDetails() {
   }
   const { data } = await apiGetClassifyDetails(params);
   classifyDetails.value = [...classifyDetails.value, ...data];
+  uni.setStorageSync("classlist", classifyDetails.value);
   if (data.length === 0) {
     noData.value = true;
   }
@@ -45,17 +45,18 @@ async function getClassifyDetails() {
 </script>
 
 <template>
-  <view class="grid-content">
-    <view v-for="item in classifyDetails" :key="item._id" class="grid-item" @click="gotoPreview">
-      <!-- <navigator url="/pages/preview/index"> -->
-      <image :src="item.smallPicurl" mode="aspectToFill" />
-      <!-- </navigator> -->
+  <view>
+    <view class="grid-content">
+      <navigator v-for="item in classifyDetails" :key="item._id" :url="`/pages/preview/index?id=${item._id}`"
+        class="grid-item">
+        <image :src="item.smallPicurl" mode="aspectToFill" />
+      </navigator>
     </view>
+
+    <uni-load-more :status="noData ? 'noMore' : 'loading'" />
+
+    <view :style="{ paddingBottom: getSysSafeAreaInsets() + 'px' }" />
   </view>
-
-  <uni-load-more :status="noData ? 'noMore' : 'loading'" />
-
-  <view :style="{ paddingBottom: getSysSafeAreaInsets() + 'px' }" />
 </template>
 
 <style lang="scss" scoped>
