@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { getStatusBarHeight, getTitleBarHeight } from "../../utils/system-safearea";
-import { apiSetupScore } from "../../api/api";
+import { apiRecordDownload, apiSetupScore } from "../../api/api";
 
 const imageList = ref([]);        // 先从缓存中获取图片对象数组
 const currentIndex = ref(0);      // 当前图片的索引
@@ -89,6 +89,66 @@ async function submitRateScore() {
     closeRatePopup();
   }
 }
+
+async function downloadImage() {
+  // #ifdef MP
+  try {
+    uni.showLoading({
+      title: "下载中...",
+      mask: true
+    });
+
+    const { classid, _id: wallId } = currentInfo.value;
+    const res = await apiRecordDownload({
+      classid,
+      wallId
+    });
+    if (res.errCode != 0) throw res;
+
+    // 由于uniapp中的saveImageToPhotosAlbum这个api不支持网络图片路径，
+    // 但可以是临时文件路径也可以是永久文件路径，用getImageInfo可以在小程序中获取一个临时的图片地址
+    uni.getImageInfo({
+      src: currentInfo.value.picurl,
+      success: (res) => {
+        uni.saveImageToPhotosAlbum({
+          filePath: res.path,
+          success: (res) => {
+            uni.showToast({
+              title: "保存成功！",
+              icon: "none"
+            });
+          },
+          fail: (err) => {
+            // 未授权的情况下也会走到这里，通过uni.openSetting来设置权限
+            uni.showModal({
+              title: "授权提示",
+              content: "需要授权保存相册",
+              success: (res) => {
+                if (res.confirm) {
+                  uni.openSetting({
+                    success: (setting) => {
+                      console.log(setting);
+                      uni.showToast({
+                        title: setting.authSetting["scope.writePhotosAlbum"] ? "授权成功^_^" : "未获取授权>_<",
+                        icon: setting.authSetting["scope.writePhotosAlbum"] ? "success" : "error"
+                      });
+                    }
+                  });
+                }
+              }
+            });
+          },
+          complete: () => {
+            uni.hideLoading();
+          }
+        });
+      }
+    });
+  } catch (err) {
+    uni.hideLoading();
+  }
+  // #endif
+}
 </script>
 
 <template>
@@ -126,7 +186,7 @@ async function submitRateScore() {
               评分
             </view>
           </view>
-          <view class="download">
+          <view class="download" @click="downloadImage">
             <uni-icons type="download" size="40" />
             <view class="text">
               下载

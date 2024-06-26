@@ -40,3 +40,10 @@ export function apiSetupScore(data = {}) {
     data
   });
 }
+
+export function apiRecordDownload(data = {}) {
+  return request({
+    url: "/downloadWall",
+    data
+  });
+}
