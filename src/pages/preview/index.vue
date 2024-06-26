@@ -108,17 +108,17 @@ async function submitRateScore() {
 async function downloadImage() {
   // #ifdef MP
   try {
-    uni.showLoading({
-      title: "下载中...",
-      mask: true
-    });
-
     const { classid, _id: wallId } = currentInfo.value;
     const res = await apiRecordDownload({
       classid,
       wallId
     });
-    if (res.errCode != 0) throw res;
+    if (res.errCode !== 0) throw res;
+
+    uni.showLoading({
+      title: "下载中...",
+      mask: true
+    });
 
     // 由于uniapp中的saveImageToPhotosAlbum这个api不支持网络图片路径，
     // 但可以是临时文件路径也可以是永久文件路径，用getImageInfo可以在小程序中获取一个临时的图片地址
