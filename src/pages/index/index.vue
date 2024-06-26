@@ -18,6 +18,8 @@ async function getBannerList() {
 async function getRecommendList() {
   const { data } = await apiGetDayRandom();
   recommendList.value = data;
+  uni.setStorageSync("classlist", recommendList.value);
+  console.log(recommendList.value);
 }
 
 async function getClassifyList() {
@@ -27,7 +29,7 @@ async function getClassifyList() {
   classifyList.value = data;
 }
 
-onLoad(async () => {
+onLoad(() => {
   getBannerList();
   getRecommendList();
   getClassifyList();
@@ -95,10 +97,9 @@ onShareTimeline(() => {
       </InfoBar>
       <view class="content">
         <scroll-view scroll-x>
-          <navigator url="/pages/preview/index" open-type="navigate">
-            <view v-for="item in recommendList" :key="item._id" class="image-box">
-              <image :src="item.smallPicurl" mode="aspectFill" />
-            </view>
+          <navigator v-for="item in recommendList" :key="item._id" :url="`/pages/preview/index?id=${item._id}`"
+            class="image-box">
+            <image :src="item.smallPicurl" mode="aspectFill" />
           </navigator>
         </scroll-view>
       </view>

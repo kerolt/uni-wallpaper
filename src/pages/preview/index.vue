@@ -253,7 +253,7 @@ async function downloadImage() {
               发布者：
             </view>
             <view class="caption">
-              {{ currentInfo.nickname }}
+              {{ currentInfo?.nickname }}
             </view>
           </view>
           <view class="pop-row">
@@ -261,8 +261,8 @@ async function downloadImage() {
               评分：
             </view>
             <view class="caption rate">
-              <uni-rate readonly touchable="false" :value="currentInfo.score" />
-              <text>{{ currentInfo.score }}分</text>
+              <uni-rate readonly touchable="false" :value="currentInfo?.score" />
+              <text>{{ currentInfo?.score }}分</text>
             </view>
           </view>
           <view class="pop-row">
@@ -270,7 +270,7 @@ async function downloadImage() {
               摘要：
             </view>
             <view class="caption">
-              {{ currentInfo.description }}
+              {{ currentInfo?.description }}
             </view>
           </view>
           <view class="pop-row">
@@ -279,7 +279,7 @@ async function downloadImage() {
             </view>
             <view class="caption">
               <view class="tags">
-                <view v-for="tab in currentInfo.tabs" :key="tab" class="tag">
+                <view v-for="tab in currentInfo?.tabs" :key="tab" class="tag">
                   {{ tab }}
                 </view>
               </view>
