@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from "vue";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onShareAppMessage } from "@dcloudio/uni-app";
 import { getStatusBarHeight, getTitleBarHeight } from "../../utils/system-safearea";
-import { apiRecordDownload, apiSetupScore } from "../../api/api";
+import { apiDetailWall, apiRecordDownload, apiSetupScore } from "../../api/api";
 
 const imageList = ref([]);        // 先从缓存中获取图片对象数组
 const currentIndex = ref(0);      // 当前图片的索引
@@ -14,7 +14,7 @@ const infoPopup = ref(null);      // 信息弹窗
 const ratePopup = ref(null);      // 评分弹窗
 const rateNum = ref(0);           // 评分数字
 
-onLoad((e) => {
+onLoad(async (e) => {
   const classlist = uni.getStorageSync("classlist") || [];
   imageList.value = classlist.map(item => {
     return {
@@ -23,8 +23,17 @@ onLoad((e) => {
     };
   });
 
-  // 根据url中的id定位图片的索引，方便swipper处理
-  const id = e.id;
+  const id = e.id; // 根据url中的id定位图片的索引，方便swipper处理
+  // 若该页面是用户通过点击别的用户分享的链接进入的，应该只展示分享的壁纸，即只有一张
+  if (e.type === "share") {
+    const { data } = await apiDetailWall({ id });
+    imageList.value = data.map(item => {
+      return {
+        ...item,
+        picurl: item.smallPicurl.replace("_small.webp", ".jpg")
+      };
+    });
+  }
   currentIndex.value = imageList.value.findIndex(item => item._id === id);
 
   hasReadImages.add((currentIndex.value - 1 + imageList.value.length) % imageList.value.length);
@@ -32,6 +41,12 @@ onLoad((e) => {
   hasReadImages.add((currentIndex.value + 1) % imageList.value.length);
 
   currentInfo.value = imageList.value[currentIndex.value];
+});
+
+onShareAppMessage(() => {
+  return {
+    path: "/pages/preview/index?id=" + currentInfo.value._id + "&type=share"
+  };
 });
 
 function goBack() {
@@ -155,7 +170,7 @@ async function downloadImage() {
   <view>
     <view class="preview-image">
       <swiper circular :current="currentIndex" @change="swipperChange" @click="showChange">
-        <swiper-item v-for="(item, index) in imageList" :key="item._id">
+        <swiper-item v-for="(item, index) in imageList" :key="item?._id">
           <image v-if="hasReadImages.has(index)" :src="item.picurl" mode="aspectToFill" />
         </swiper-item>
       </swiper>
@@ -212,7 +227,7 @@ async function downloadImage() {
               壁纸ID：
             </view>
             <view class="caption">
-              {{ currentInfo._id }}
+              {{ currentInfo?._id }}
             </view>
           </view>
           <!-- <view class="pop-row">

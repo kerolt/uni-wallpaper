@@ -1,5 +1,5 @@
 <script setup>
-import { onLoad, onReachBottom } from "@dcloudio/uni-app";
+import { onLoad, onReachBottom, onShareAppMessage } from "@dcloudio/uni-app";
 import { ref } from "vue";
 import { apiGetClassifyDetails } from "../../api/api";
 import { getSysSafeAreaInsets } from "../../utils/system-safearea";
@@ -18,6 +18,13 @@ onLoad((e) => {
     title: name
   });
   getClassifyDetails();
+});
+
+onShareAppMessage(() => {
+  return {
+    title: "分类详情" + params.name,
+    path: "/pages/classlist/index?id=" + params.classid + "&name=" + params.name
+  };
 });
 
 onReachBottom(() => {

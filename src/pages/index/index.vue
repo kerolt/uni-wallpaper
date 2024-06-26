@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import InfoBar from "../../components/InfoBar.vue";
 import Topic from "../../components/Topic.vue";
 import NavBar from "../../components/NavBar.vue";
@@ -31,6 +31,19 @@ onLoad(async () => {
   getBannerList();
   getRecommendList();
   getClassifyList();
+});
+
+onShareAppMessage(() => {
+  return {
+    title: "咸虾米壁纸学习～",
+    path: "/pages/index/index"
+  };
+});
+
+onShareTimeline(() => {
+  return {
+    title: "咸虾米壁纸学习～",
+  };
 });
 
 </script>
