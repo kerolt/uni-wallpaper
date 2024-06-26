@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { onLoad, onShareAppMessage } from "@dcloudio/uni-app";
 import { getStatusBarHeight, getTitleBarHeight } from "../../utils/system-safearea";
 import { apiDetailWall, apiRecordDownload, apiSetupScore } from "../../api/api";
+import { gotoHome } from "../../utils/utils";
 
 const imageList = ref([]);        // 先从缓存中获取图片对象数组
 const currentIndex = ref(0);      // 当前图片的索引
@@ -15,6 +16,12 @@ const ratePopup = ref(null);      // 评分弹窗
 const rateNum = ref(0);           // 评分数字
 
 onLoad(async (e) => {
+  const id = e.id; // 根据url中的id定位图片的索引，方便swipper处理
+  if (!id) {
+    gotoHome();
+    return;
+  }
+
   const classlist = uni.getStorageSync("classlist") || [];
   imageList.value = classlist.map(item => {
     return {
@@ -23,7 +30,6 @@ onLoad(async (e) => {
     };
   });
 
-  const id = e.id; // 根据url中的id定位图片的索引，方便swipper处理
   // 若该页面是用户通过点击别的用户分享的链接进入的，应该只展示分享的壁纸，即只有一张
   if (e.type === "share") {
     const { data } = await apiDetailWall({ id });
@@ -51,7 +57,9 @@ onShareAppMessage(() => {
 
 function goBack() {
   uni.navigateBack({
-    animationType: "pop-out"
+    fail: () => {
+      uni.reLaunch({ url: "/pages/index/index" });
+    }
   });
 }
 

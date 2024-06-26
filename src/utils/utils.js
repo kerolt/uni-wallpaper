@@ -18,6 +18,21 @@ export function getTimeDescription(timestamp) {
   } else if (diffMonths <= 3) {
     return `${Math.floor(diffMonths)}个月`;
   } else {
-    return null;
+    return "很久";
   }
+}
+
+export function gotoHome() {
+  uni.showModal({
+    title: "提示",
+    content: "页面出错啦，将返回首页",
+    showCancel: false,
+    success: (res) => {
+      if (res.confirm) {
+        uni.reLaunch({
+          url: "/pages/index/index"
+        });
+      }
+    }
+  });
 }

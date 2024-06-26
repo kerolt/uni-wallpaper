@@ -3,6 +3,7 @@ import { onLoad, onReachBottom, onShareAppMessage } from "@dcloudio/uni-app";
 import { ref } from "vue";
 import { apiGetClassifyDetails } from "../../api/api";
 import { getSysSafeAreaInsets } from "../../utils/system-safearea";
+import { gotoHome } from "../../utils/utils";
 
 const params = {
   pageNum: 1
@@ -12,6 +13,10 @@ const noData = ref(false);
 
 onLoad((e) => {
   const { id, name } = e;
+  if (!id) {
+    gotoHome();
+    return;
+  }
   params.classid = id;
   params.name = name;
   uni.setNavigationBarTitle({
