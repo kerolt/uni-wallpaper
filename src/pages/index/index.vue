@@ -18,8 +18,6 @@ async function getBannerList() {
 async function getRecommendList() {
   const { data } = await apiGetDayRandom();
   recommendList.value = data;
-  uni.setStorageSync("classlist", recommendList.value);
-  console.log(recommendList.value);
 }
 
 async function getClassifyList() {
@@ -47,6 +45,11 @@ onShareTimeline(() => {
     title: "咸虾米壁纸学习～",
   };
 });
+
+function gotoPreview(id) {
+  uni.setStorageSync("classlist", recommendList.value);
+  uni.navigateTo({ url: `/pages/preview/index?id=${id}` });
+}
 
 </script>
 
@@ -97,10 +100,9 @@ onShareTimeline(() => {
       </InfoBar>
       <view class="content">
         <scroll-view scroll-x>
-          <navigator v-for="item in recommendList" :key="item._id" :url="`/pages/preview/index?id=${item._id}`"
-            class="image-box">
+          <view v-for="item in recommendList" :key="item._id" class="image-box" @click="gotoPreview(item._id)">
             <image :src="item.smallPicurl" mode="aspectFill" />
-          </navigator>
+          </view>
         </scroll-view>
       </view>
     </view>

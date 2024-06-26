@@ -1,5 +1,5 @@
 <script setup>
-import { onLoad, onReachBottom, onShareAppMessage } from "@dcloudio/uni-app";
+import { onLoad, onReachBottom, onShareAppMessage, onUnload } from "@dcloudio/uni-app";
 import { ref } from "vue";
 import { apiGetClassifyDetails } from "../../api/api";
 import { getSysSafeAreaInsets } from "../../utils/system-safearea";
@@ -23,6 +23,10 @@ onLoad((e) => {
     title: name
   });
   getClassifyDetails();
+});
+
+onUnload(() => {
+  uni.removeStorageSync("classlist");
 });
 
 onShareAppMessage(() => {
