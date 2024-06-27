@@ -54,3 +54,17 @@ export function apiDetailWall(data = {}) {
     data
   });
 }
+
+export function apiUserInfo() {
+  return request({
+    url: "/userInfo",
+  });
+}
+
+// data对象中包含一个type，其值为download或score，用于查询发起请求的ip的用户的下载或者评分列表
+export function apiGetUserWallList(data = {}) {
+  return request({
+    url: "/userWallList",
+    data
+  });
+}

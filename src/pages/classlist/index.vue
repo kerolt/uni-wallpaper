@@ -1,7 +1,7 @@
 <script setup>
 import { onLoad, onReachBottom, onShareAppMessage, onUnload } from "@dcloudio/uni-app";
 import { ref } from "vue";
-import { apiGetClassifyDetails } from "../../api/api";
+import { apiGetClassifyDetails, apiGetUserWallList } from "../../api/api";
 import { getSysSafeAreaInsets } from "../../utils/system-safearea";
 import { gotoHome } from "../../utils/utils";
 
@@ -12,8 +12,12 @@ const classifyDetails = ref([]);
 const noData = ref(false);
 
 onLoad((e) => {
-  const { id, name } = e;
-  if (!id) {
+  const { id, name, type = null } = e;
+  // 通过type来区分是查询下载还是评分，用id的值是否为空来判断页面参数是否有误。
+  // 这是因为点击“我的下载/评分”跳转至classlist页面时不会携带id
+  if (type) {
+    params.type = type;
+  } else if (!id) {
     gotoHome();
     return;
   }
@@ -50,10 +54,15 @@ async function getClassifyDetails() {
   if (noData.value) {
     return;
   }
-  const { data } = await apiGetClassifyDetails(params);
-  classifyDetails.value = [...classifyDetails.value, ...data];
+  let res;
+  if (params.classid) {
+    res = await apiGetClassifyDetails(params);
+  } else if (params.type) {
+    res = await apiGetUserWallList(params);
+  }
+  classifyDetails.value = [...classifyDetails.value, ...res.data];
   uni.setStorageSync("classlist", classifyDetails.value);
-  if (data.length === 0) {
+  if (res.data.length === 0) {
     noData.value = true;
   }
   params.pageNum++;

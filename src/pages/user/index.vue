@@ -1,39 +1,85 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+import { onLoad } from "@dcloudio/uni-app";
+import { getTitleBarHeight } from "../../utils/system-safearea";
+import { apiUserInfo } from "../../api/api";
+
+const userInfo = ref(null);
+
+onLoad(() => {
+  getUserInfo();
+});
+
+async function getUserInfo() {
+  const { data } = await apiUserInfo();
+  userInfo.value = data;
+}
+
+</script>
 
 <template>
   <view class="page-bg">
+    <view :style="{ height: getTitleBarHeight() + 'px' }" />
     <view class="info">
       <image src="@/static/logo.png" mode="aspectFill" />
-      <view class="ip">127.0.0.1</view>
-      <view class="location">来自于：湖南</view>
-    </view>
-
-    <view class="section">
-      <view class="section-list">
-        <view class="section-item" v-for="i in 3">
-          <view class="item-left">
-            <uni-icons type="download-filled" size="30" color="#28b398"> </uni-icons>
-            <view class="text">我的下载</view>
-          </view>
-          <view class="item-right">
-            <view class="text">20</view>
-            <uni-icons type="right" size="20" color="#666"></uni-icons>
-          </view>
-        </view>
+      <view class="ip">
+        IP：{{ userInfo?.IP }}
+      </view>
+      <view class="location">
+        来自于：{{ userInfo?.address.city || userInfo?.address.province || userInfo?.address.country }}
       </view>
     </view>
 
     <view class="section">
       <view class="section-list">
-        <view class="section-item" v-for="i in 2">
+        <navigator url="/pages/classlist/index?name=我的下载&type=download" open-type="navigate"
+          hover-class="navigator-hover" class="section-item">
           <view class="item-left">
-            <uni-icons type="download-filled" size="30" color="#28b398"> </uni-icons>
-            <view class="text">我的下载</view>
+            <uni-icons type="download-filled" size="30" color="#28b398" />
+            <view class="text">
+              我的下载
+            </view>
           </view>
           <view class="item-right">
-            <view class="text">20</view>
-            <uni-icons type="right" size="20" color="#666"></uni-icons>
+            <view class="text">
+              {{ userInfo?.downloadSize }}
+            </view>
+            <uni-icons type="right" size="20" color="#666" />
           </view>
+        </navigator>
+        <navigator url="/pages/classlist/index?name=我的评分&type=score" open-type="navigate" hover-class="navigator-hover"
+          class="section-item">
+          <view class="item-left">
+            <uni-icons type="star-filled" size="30" color="#28b398" />
+            <view class="text">
+              我的评分
+            </view>
+          </view>
+          <view class="item-right">
+            <view class="text">
+              {{ userInfo?.scoreSize }}
+            </view>
+            <uni-icons type="right" size="20" color="#666" />
+          </view>
+        </navigator>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-list">
+        <view class="section-item">
+          <view class="item-left">
+            <uni-icons type="contact" size="30" color="#28b398" />
+            <view class="text">
+              联系客服
+            </view>
+          </view>
+          <view class="item-right">
+            <uni-icons type="right" size="20" color="#666" />
+          </view>
+          <button open-type="contact">
+            联系客服
+          </button>
         </view>
       </view>
     </view>
@@ -52,14 +98,16 @@
     width: 160rpx;
     height: 160rpx;
     border-radius: 50%;
+    margin: 20rpx 0;
   }
 
   .ip {
-    padding: 10rpx 0;
+    margin: 12rpx 0;
+    font-size: 20px;
   }
 
   .location {
-    padding: 5rpx 0;
+    margin: 12rpx 0;
   }
 }
 
@@ -69,6 +117,7 @@
   box-shadow: 0 0 15rpx rgba(0, 0, 0, 0.05);
   border: 1px solid #eee;
   border-radius: 15rpx;
+  overflow: hidden;
 
   .section-list {
 
@@ -79,6 +128,7 @@
       border-bottom: 1px solid #eee;
       background: #fff;
       padding: 15rpx 10rpx;
+      position: relative;
 
       .item-left {
         display: flex;
@@ -100,6 +150,14 @@
           color: #666;
           padding-right: 10rpx;
         }
+      }
+
+      button {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
       }
     }
 
