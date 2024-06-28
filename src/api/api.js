@@ -12,14 +12,6 @@ export function apiGetDayRandom() {
   });
 }
 
-export function apiGetNotice(data = {}) {
-  return request({
-    url: "/wallNewsList",
-    data,
-    method: "POST"
-  });
-}
-
 export function apiGetClassify(data = {}) {
   return request({
     url: "/classify",
@@ -65,6 +57,20 @@ export function apiUserInfo() {
 export function apiGetUserWallList(data = {}) {
   return request({
     url: "/userWallList",
+    data
+  });
+}
+
+export function apiGetNoticeList(data = {}) {
+  return request({
+    url: "/wallNewsList",
+    data
+  });
+}
+
+export function apiGetDetailNotice(data = {}) {
+  return request({
+    url: "/wallNewsDetail",
     data
   });
 }

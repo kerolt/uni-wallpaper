@@ -4,11 +4,12 @@ import { onLoad, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import InfoBar from "../../components/InfoBar.vue";
 import Topic from "../../components/Topic.vue";
 import NavBar from "../../components/NavBar.vue";
-import { apiGetBanner, apiGetClassify, apiGetDayRandom, apiGetNotice } from "../../api/api";
+import { apiGetBanner, apiGetClassify, apiGetDayRandom, apiGetNoticeList } from "../../api/api";
 
 const bannerList = ref([]);
 const recommendList = ref([]);
 const classifyList = ref([]);
+const noticeList = ref([]);
 
 async function getBannerList() {
   const { data } = await apiGetBanner();
@@ -27,10 +28,16 @@ async function getClassifyList() {
   classifyList.value = data;
 }
 
+async function getNoticeList() {
+  const { data } = await apiGetNoticeList();
+  noticeList.value = data;
+}
+
 onLoad(() => {
   getBannerList();
   getRecommendList();
   getClassifyList();
+  getNoticeList();
 });
 
 onShareAppMessage(() => {
@@ -75,8 +82,10 @@ function gotoPreview(id) {
       </view>
       <view class="notice-center">
         <swiper vertical autoplay circular interval="2500" duration="800">
-          <swiper-item v-for="item in 3">
-            消息
+          <swiper-item v-for="item in noticeList" :key="item._id">
+            <navigator :url="`/pages/notice/index?id=${item._id}`">
+              {{ item.title }}
+            </navigator>
           </swiper-item>
         </swiper>
       </view>

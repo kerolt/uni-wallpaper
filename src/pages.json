@@ -32,6 +32,13 @@
 			}
 		},
 		{
+			"path": "pages/notice/index",
+			"style": {
+				"navigationBarTitleText": "公告",
+				"navigationStyle": "default"
+			}
+		},
+		{
 			"path": "pages/preview/index",
 			"style": {
 				"navigationBarTitleText": "图片预览"

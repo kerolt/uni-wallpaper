@@ -69,7 +69,7 @@ async function getUserInfo() {
       <view class="section-list">
         <view class="section-item">
           <view class="item-left">
-            <uni-icons type="contact" size="30" color="#28b398" />
+            <uni-icons type="chatbubble-filled" size="30" color="#28b398" />
             <view class="text">
               联系客服
             </view>
@@ -81,6 +81,28 @@ async function getUserInfo() {
             联系客服
           </button>
         </view>
+        <navigator url="/pages/notice/index?id=653507c6466d417a3718e94b" open-type="navigate" class="section-item">
+          <view class="item-left">
+            <uni-icons type="notification-filled" size="30" color="#28b398" />
+            <view class="text">
+              订阅更新
+            </view>
+          </view>
+          <view class="item-right">
+            <uni-icons type="right" size="20" color="#666" />
+          </view>
+        </navigator>
+        <navigator url="/pages/notice/index?id=6536358ce0ec19c8d67fbe82" open-type="navigate" class="section-item">
+          <view class="item-left">
+            <uni-icons type="help-filled" size="30" color="#28b398" />
+            <view class="text">
+              常见问题
+            </view>
+          </view>
+          <view class="item-right">
+            <uni-icons type="right" size="20" color="#666" />
+          </view>
+        </navigator>
       </view>
     </view>
   </view>
