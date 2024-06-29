@@ -40,6 +40,7 @@
     "build:quickapp-webview-union": "uni build -p quickapp-webview-union"
   },
   "dependencies": {
+    "@climblee/uv-ui": "^1.1.20",
     "@dcloudio/uni-app": "3.0.0-4010520240507001",
     "@dcloudio/uni-app-plus": "3.0.0-4010520240507001",
     "@dcloudio/uni-components": "3.0.0-4010520240507001",

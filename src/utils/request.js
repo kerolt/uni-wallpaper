@@ -26,6 +26,12 @@ export function request(config = {}) {
         }
       },
       fail: err => {
+        uni.showModal({
+          title: "啊哦！",
+          content: err.data.errMsg,
+          icon: "none",
+          showCancel: false
+        });
         reject(err);
       },
       complete: () => {

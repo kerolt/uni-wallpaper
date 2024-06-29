@@ -74,3 +74,10 @@ export function apiGetDetailNotice(data = {}) {
     data
   });
 }
+
+export function apiSearchWall(data = {}) {
+  return request({
+    url: "/searchWall",
+    data
+  });
+}

@@ -11,16 +11,22 @@ defineProps({
 
 <template>
   <view class="navbar">
-    <view class="status-bar" :style="{ height: getStatusBarHeight() + 'px' }"></view>
+    <view class="status-bar" :style="{ height: getStatusBarHeight() + 'px' }" />
     <view class="title-bar" :style="{ height: getTitleBarHeight() + 'px' }">
-      <view class="title">{{ title }}</view>
-      <view class="search">
-        <uni-icons type="search" size="20"></uni-icons>
-        <view class="text">搜索</view>
+      <view class="title">
+        {{ title }}
       </view>
+      <navigator url="/pages/search/index" open-type="navigate" hover-class="navigator-hover">
+        <view class="search">
+          <uni-icons type="search" size="20" />
+          <view class="text">
+            搜索
+          </view>
+        </view>
+      </navigator>
     </view>
   </view>
-  <view :style="{ height: getStatusBarHeight() + getTitleBarHeight() + 'px' }"></view>
+  <view :style="{ height: getStatusBarHeight() + getTitleBarHeight() + 'px' }" />
 </template>
 
 <style lang="scss" scoped>
