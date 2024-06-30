@@ -14,6 +14,7 @@ const noticeList = ref([]);
 async function getBannerList() {
   const { data } = await apiGetBanner();
   bannerList.value = data;
+  console.log(bannerList.value);
 }
 
 async function getRecommendList() {
@@ -67,7 +68,12 @@ function gotoPreview(id) {
     <view class="banner">
       <swiper circular indicator-dots autoplay indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff">
         <swiper-item v-for="item in bannerList" :key="item._id">
-          <image :src="item.picurl" mode="aspectFill" />
+          <navigator v-if="item.target === 'self'" :url="`/pages/classlist/index?${item.url}`">
+            <image :src="item.picurl" mode="aspectFill" />
+          </navigator>
+          <navigator v-else :url="`/pages/classlist/index?${item.url}`" target="miniProgram" :app-id="item.appid">
+            <image :src="item.picurl" mode="aspectFill" />
+          </navigator>
         </swiper-item>
       </swiper>
     </view>
@@ -122,9 +128,6 @@ function gotoPreview(id) {
         <template #name>
           专题精选
         </template>
-        <template #custom>
-          more
-        </template>
       </InfoBar>
       <view class="select-content">
         <Topic v-for="item in classifyList" :key="item._id" class="select-content-item" :item="item" />
@@ -149,10 +152,15 @@ function gotoPreview(id) {
         height: 100%;
         padding: 0 30rpx;
 
-        image {
+        navigator {
           width: 100%;
           height: 100%;
-          border-radius: 10rpx;
+
+          image {
+            width: 100%;
+            height: 100%;
+            border-radius: 10rpx;
+          }
         }
       }
     }
